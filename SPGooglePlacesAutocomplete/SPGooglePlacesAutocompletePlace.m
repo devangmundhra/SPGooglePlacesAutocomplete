@@ -48,8 +48,12 @@
         if (error) {
             block(nil, nil, error);
         } else {
-            NSString *addressString = placeDictionary[@"formatted_address"];
-            [[self geocoder] geocodeAddressString:addressString completionHandler:^(NSArray *placemarks, NSError *error) {
+            NSDictionary *geometry = placeDictionary[@"geometry"];
+            NSDictionary *location = geometry[@"location"];
+            CLLocationDegrees latitude = [location[@"lat"] doubleValue];
+            CLLocationDegrees longitude = [location[@"lng"] doubleValue];
+            CLLocation *myLocation = [[CLLocation alloc] initWithLatitude:latitude longitude:longitude];
+            [[self geocoder] reverseGeocodeLocation:myLocation completionHandler:^(NSArray *placemarks, NSError *error) {
                 if (error) {
                     block(nil, nil, error);
                 } else {
